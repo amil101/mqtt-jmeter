@@ -24,7 +24,6 @@ package org.apache.jmeter.protocol.mqtt.client;
 import org.apache.jmeter.config.Arguments;
 import org.apache.jmeter.protocol.java.sampler.AbstractJavaSamplerClient;
 import org.apache.jmeter.protocol.java.sampler.JavaSamplerContext;
-import org.apache.jmeter.protocol.mqtt.control.gui.MQTTPublisherGui;
 import org.apache.jmeter.samplers.SampleResult;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -43,10 +42,10 @@ public class MqttPublisher extends AbstractJavaSamplerClient implements
         Serializable, Closeable {
 
     private static MqttAsyncClient client;
-    private static int qos = 0;
-    private static String topic = "";
-    private static String publishMessage = "";
-    private static boolean retained;
+    private int qos = 0;
+    private String topic = "";
+    private String publishMessage = "";
+    private boolean retained;
     private static AtomicInteger publishedMessageCount = new AtomicInteger(0);
 
     private static final long serialVersionUID = 1L;
@@ -62,29 +61,14 @@ public class MqttPublisher extends AbstractJavaSamplerClient implements
         return defaultParameters;
     }
 
-    public void setupTest(JavaSamplerContext context) {
-        String host = context.getParameter("HOST");
-        String clientId = context.getParameter("CLIENT_ID");
-
-        // Quality
-        if (MQTTPublisherGui.EXACTLY_ONCE.equals(context.getParameter("QOS"))) {
-            qos = 0;
-        } else if (MQTTPublisherGui.AT_LEAST_ONCE.equals(context.getParameter("QOS"))) {
-            qos = 1;
-        } else if (MQTTPublisherGui.AT_MOST_ONCE.equals(context.getParameter("QOS"))) {
-            qos = 2;
-        }
-        topic = context.getParameter("TOPIC");
-        publishMessage = context.getParameter("MESSAGE");
-        retained = Boolean.parseBoolean(context.getParameter("RETAINED"));
-
-        setupTest(host, clientId, context.getParameter("USER"), context.getParameter("PASSWORD"));
-    }
-
-    public void setupTest(String host, String clientId, String user, String password) {
+    public void setupTest(String connectionUrl, String clientId, String topic, String user, String password, int qos, boolean retain, String messageContent) {
         try {
+            this.qos = qos;
+            this.topic = topic;
+            this.retained = retain;
+            this.publishMessage = messageContent;
 
-            client = new MqttAsyncClient(host, clientId);
+            client = new MqttAsyncClient(connectionUrl, clientId);
             JMeterIMqttPublisherActionListener actionListener = new JMeterIMqttPublisherActionListener();
 
             MqttConnectOptions connectOptions = new MqttConnectOptions();

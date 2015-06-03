@@ -57,7 +57,6 @@ public class MQTTSubscriberGui extends AbstractSamplerGui  {
     private final JLabeledTextField mqttPwd = new JLabeledPasswordField(JMeterUtils.getResString("mqtt_pwd")); // $NON-NLS-1$
     private final JLabeledTextField timeout =  new JLabeledTextField(JMeterUtils.getResString("mqtt_timeout")); //$NON-NLS-1$
     private final JLabeledTextField separator =  new JLabeledTextField(JMeterUtils.getResString("mqtt_separator")); //$NON-NLS-1$
-    private final JCheckBox connectionPerTopic = new JCheckBox(JMeterUtils.getResString("mqtt_connection_per_topic"), false); // $NON-NLS-1$
     private final JCheckBox stopBetweenSamples = new JCheckBox(JMeterUtils.getResString("mqtt_stop_between_samples"), true); // $NON-NLS-1$
     private final JLabeledTextField clientId = new JLabeledTextField(JMeterUtils.getResString("mqtt_client_id")); //$NON-NLS-1$
     private final JLabeledRadioI18N typeQoSValue = new JLabeledRadioI18N("mqtt_qos", QTYPES_ITEMS,AT_MOST_ONCE); //$NON-NLS-1$
@@ -96,7 +95,6 @@ public class MQTTSubscriberGui extends AbstractSamplerGui  {
         sampler.setUsername(mqttUser.getText());
         sampler.setPassword(mqttPwd.getText());
         sampler.setTimeout(timeout.getText());
-        sampler.setOneConnectionPerTopic(this.connectionPerTopic.isSelected());
         sampler.setQuality(typeQoSValue.getText());
         sampler.setCleanSession(cleanSession.isSelected());
         
@@ -182,9 +180,6 @@ public class MQTTSubscriberGui extends AbstractSamplerGui  {
 		panel.add(mqttDestination);
 		JPanel TPanel = new JPanel();
 		TPanel.setLayout(new BoxLayout(TPanel,BoxLayout.X_AXIS));		
-		this.connectionPerTopic.setLayout(new BoxLayout(connectionPerTopic, BoxLayout.X_AXIS));
-		this.connectionPerTopic.setAlignmentX(CENTER_ALIGNMENT);
-		TPanel.add(connectionPerTopic);
 		TPanel.add(Box.createHorizontalStrut(100));
 		panel.add(TPanel);
 		return panel;
